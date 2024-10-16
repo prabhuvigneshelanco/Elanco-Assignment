@@ -6,7 +6,7 @@ interface CountryCardProps {
     name: string;
     region: string;
     flag: string;
-    code: string; // Ensure this field exists in the backend response (ISO country code).
+    code: string; // Use the `code` field (alpha-3 code)
   };
 }
 

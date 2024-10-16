@@ -1,26 +1,26 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import CountryCard from '../components/CountryCard';
-import Header from '../components/Header';
-import SearchBar from '../components/SearchBar';
-import SkeletonLoader from '../components/SkeletonLoader';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import CountryCard from "../components/CountryCard";
+import Header from "../components/Header";
+import SearchBar from "../components/SearchBar";
+import SkeletonLoader from "../components/SkeletonLoader";
 
 export default function Home() {
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedRegion, setSelectedRegion] = useState('All');
+  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("All");
 
   // Fetch countries from the backend on component mount
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/countries');
+        const response = await axios.get("http://localhost:3001/countries");
         setCountries(response.data); // Assuming each country has a 'code' field for the ISO code
         setLoading(false);
       } catch (err) {
-        setError('Failed to load countries');
+        setError("Failed to load countries");
         setLoading(false);
       }
     };
@@ -33,7 +33,7 @@ export default function Home() {
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
     const matchesRegion =
-      selectedRegion === 'All' || country.region === selectedRegion;
+      selectedRegion === "All" || country.region === selectedRegion;
     return matchesSearch && matchesRegion;
   });
 
