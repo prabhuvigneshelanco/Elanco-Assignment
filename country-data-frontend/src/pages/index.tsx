@@ -1,75 +1,78 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import CountryCard from "../components/CountryCard";
+import Header from "../components/Header";
+import SearchBar from "../components/SearchBar";
+import SkeletonLoader from "../components/SkeletonLoader";
 
 export default function Home() {
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("All");
 
+  // Fetch countries from the backend on component mount
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/countries');
-        setCountries(response.data);
+        const response = await axios.get("http://localhost:3001/countries");
+        setCountries(response.data); // Assuming each country has a 'code' field for the ISO code
         setLoading(false);
       } catch (err) {
-        setError('Failed to load countries');
+        setError("Failed to load countries");
         setLoading(false);
       }
     };
     fetchCountries();
   }, []);
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  if (error) return <p className="text-red-500">{error}</p>;
-
-  const filteredCountries = countries.filter((country: any) =>
-    country.name.includes(searchTerm)
-  );
+  // Filter countries by search term and selected region
+  const filteredCountries = countries.filter((country: any) => {
+    const matchesSearch = country.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesRegion =
+      selectedRegion === "All" || country.region === selectedRegion;
+    return matchesSearch && matchesRegion;
+  });
 
   return (
-    <div className="p-6">
-      {/* Search Input */}
-      <div className="mb-4">
-        <label className="block text-gray-700">
-          Search for a Country
-        </label>
-        <input
-          id="search"
-          type="text"
-          placeholder="Enter country name"
-          className="border border-gray-300"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+    <div className="container mx-auto p-6">
+      {/* Header Component */}
+      <Header />
 
-      {/* Display filtered countries */}
-      <div className="grid grid-cols-4">
-        {filteredCountries.length > 0 ? (
-          filteredCountries.map((country) => (
-            <div key={country.name} className="bg-white rounded-lg shadow-md p-4">
-              {/* Accessing the flag from the 'flag' property */}
-              {country.flag ? (
-                <img
-                  className="w-10 h-10 object-cover"
-                  src={country.flag}
-                  alt={`Flag of ${country.name}`}
-                />
-              ) : (
-                <p className="text-center">No Flag Available</p>
-              )}
-              <div className="mt-2 text-center">
-                <h2>{country.name}</h2>
-                <p>{country.region}</p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500">No countries found.</p>
-        )}
-      </div>
+      {/* Search and Region Filter Bar */}
+      <SearchBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        selectedRegion={selectedRegion}
+        setSelectedRegion={setSelectedRegion}
+      />
+
+      {/* Error Message */}
+      {error && <p className="text-red-500 text-center mt-10">{error}</p>}
+
+      {/* Display Skeleton Loader or Country Cards */}
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <SkeletonLoader key={index} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {filteredCountries.length > 0 ? (
+            filteredCountries.map((country: any) => (
+              <CountryCard key={country.code} country={country} />
+            ))
+          ) : (
+            <p className="text-gray-500 text-center w-full">
+              No countries found.
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
-};
+}

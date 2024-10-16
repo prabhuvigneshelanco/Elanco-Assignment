@@ -1,5 +1,10 @@
 import express from 'express';
-import { getCountries, getCountryByCode, filterCountriesByRegion, searchCountries } from '../controllers/countryController';
+import { 
+  getCountries, 
+  getCountryByCode, 
+  filterCountriesByRegion, 
+  searchCountries 
+} from '../controllers/countryController';
 
 const router = express.Router();
 
