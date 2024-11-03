@@ -1,0 +1,39 @@
+### GET All Countries
+GET http://localhost:3001/Countries
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+### GET Country By Code
+GET http://localhost:3001/Countries/country/US
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+### GET Country By region
+GET http://localhost:3001/Countries/region/Asia
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+### GET Search
+GET http://localhost:3001/Countries/Search?name=India
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
