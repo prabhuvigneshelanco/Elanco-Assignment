@@ -32,14 +32,14 @@ export const getCountryByCode = async (req: Request, res: Response) => {
 // Filter countries by region
 export const filterCountriesByRegion = async (req: Request, res: Response) => {
   const { region } = req.params;
-    const response = await axios.get(REST_COUNTRIES_API);
-    const countries = response.data.filter((country: any) => country.region === region);
-    res.json(countries);
+  const response = await axios.get(REST_COUNTRIES_API);
+  const countries = response.data.filter((country: any) => country.region === region);
+  res.json(countries);
 };
 
 // Search countries
 export const searchCountries = async (req: Request, res: Response) => {
-  const { name, capital, region, timezone } = req.query;
+    const { name, capital, region, timezone } = req.query;
     const response = await axios.get(REST_COUNTRIES_API);
     let countries = response.data;
     if (name) {
@@ -59,4 +59,4 @@ export const searchCountries = async (req: Request, res: Response) => {
       countries = countries.filter((country: any) => country.timezones.includes(timezone as string));
     }
     res.json(countries);
-  }
+};
