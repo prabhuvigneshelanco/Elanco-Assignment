@@ -1,75 +1,78 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import { CountryList } from "../components/CountryList";
+import { SearchBar } from "../components/SearchBar";
+import { RegionFilter } from "../components/RegionFilter";
+import { Country } from "../types/Country";
+import { countryService } from "../services/countryService";
 
 export default function Home() {
-  const [countries, setCountries] = useState([]);
+  const [countries, setCountries] = useState<Country[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [error, setError] = useState("");
+  const [countrySearch, setCountrySearch] = useState("");
+  const [capitalSearch, setCapitalSearch] = useState("");
+  const [timezoneSearch, setTimezoneSearch] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("All");
+
+  const fetchCountries = async (region = "All") => {
+    console.log(`Fetching countries for region: ${region}`);
+
+    setLoading(true);
+
+    try {
+      let response;
+
+      if (region === "All") {
+        response = await countryService.getAllCountries();
+      } else {
+        response = await countryService.getCountriesByRegion(region);
+      }
+      setCountries(response);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to load countries");
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/countries');
-        setCountries(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to load countries');
-        setLoading(false);
-      }
-    };
-    fetchCountries();
-  }, []);
+    fetchCountries(selectedRegion);
+  }, [selectedRegion]);
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
   if (error) return <p className="text-red-500">{error}</p>;
 
-  const filteredCountries = countries.filter((country: any) =>
-    country.name.includes(searchTerm)
+  console.log("countries:", countries);
+  const filteredCountries = countries.filter((country: Country) =>
+    country.name.toLowerCase().includes(countrySearch.toLowerCase())
   );
 
   return (
     <div className="p-6">
-      {/* Search Input */}
-      <div className="mb-4">
-        <label className="block text-gray-700">
-          Search for a Country
-        </label>
-        <input
-          id="search"
-          type="text"
-          placeholder="Enter country name"
-          className="border border-gray-300"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      <div className="flex space-x-4">
+        <div className="">
+          <SearchBar
+            countrySearch={countrySearch}
+            capitalSearch={capitalSearch}
+            timezoneSearch={timezoneSearch}
+            onCountrySearchChange={setCountrySearch}
+            onCapitalSearchChange={setCapitalSearch}
+            onTimezoneSearchChange={setTimezoneSearch}
+          />
+        </div>
+        <div className="">
+          <RegionFilter
+            selectedRegion={selectedRegion}
+            onRegionChange={setSelectedRegion}
+          />
+        </div>
       </div>
-
-      {/* Display filtered countries */}
-      <div className="grid grid-cols-4">
-        {filteredCountries.length > 0 ? (
-          filteredCountries.map((country) => (
-            <div key={country.name} className="bg-white rounded-lg shadow-md p-4">
-              {/* Accessing the flag from the 'flag' property */}
-              {country.flag ? (
-                <img
-                  className="w-10 h-10 object-cover"
-                  src={country.flag}
-                  alt={`Flag of ${country.name}`}
-                />
-              ) : (
-                <p className="text-center">No Flag Available</p>
-              )}
-              <div className="mt-2 text-center">
-                <h2>{country.name}</h2>
-                <p>{country.region}</p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500">No countries found.</p>
-        )}
-      </div>
+      <CountryList countries={filteredCountries} />
     </div>
   );
-};
+}
