@@ -1,75 +1,66 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+"use client";
+
+import { useState, useEffect } from "react";
+import Header from "../components/Header";
+import SearchInput from "../components/SearchBar";
+import CountryCard from "../components/CountryCard";
+import { fetchCountries } from "../services/countryService";
+import { Labels } from "../services/labels";
 
 export default function Home() {
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const fetchCountries = async () => {
+    const loadCountries = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/countries');
-        setCountries(response.data);
+        const data = await fetchCountries();
+        setCountries(data);
         setLoading(false);
       } catch (err) {
-        setError('Failed to load countries');
+        setError(Labels.errorMessage);
         setLoading(false);
       }
     };
-    fetchCountries();
+    loadCountries();
   }, []);
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        {Labels.loading}
+      </div>
+    );
   if (error) return <p className="text-red-500">{error}</p>;
 
-  const filteredCountries = countries.filter((country: any) =>
-    country.name.includes(searchTerm)
-  );
+  const filteredCountries = countries.filter((country: any) => {
+    const matchesSearchTerm = country.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesRegion = country.region
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    return matchesSearchTerm || matchesRegion;
+  });
 
   return (
-    <div className="p-6">
-      {/* Search Input */}
-      <div className="mb-4">
-        <label className="block text-gray-700">
-          Search for a Country
-        </label>
-        <input
-          id="search"
-          type="text"
-          placeholder="Enter country name"
-          className="border border-gray-300"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+    <div>
+      <Header />
+      <div className="p-6">
+        <SearchInput searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-      {/* Display filtered countries */}
-      <div className="grid grid-cols-4">
-        {filteredCountries.length > 0 ? (
-          filteredCountries.map((country) => (
-            <div key={country.name} className="bg-white rounded-lg shadow-md p-4">
-              {/* Accessing the flag from the 'flag' property */}
-              {country.flag ? (
-                <img
-                  className="w-10 h-10 object-cover"
-                  src={country.flag}
-                  alt={`Flag of ${country.name}`}
-                />
-              ) : (
-                <p className="text-center">No Flag Available</p>
-              )}
-              <div className="mt-2 text-center">
-                <h2>{country.name}</h2>
-                <p>{country.region}</p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500">No countries found.</p>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filteredCountries.length > 0 ? (
+            filteredCountries.map((country) => (
+              <CountryCard key={country} country={country} />
+            ))
+          ) : (
+            <p className="text-gray-500">{Labels.noCountryFound}</p>
+          )}
+        </div>
       </div>
     </div>
   );
-};
+}
