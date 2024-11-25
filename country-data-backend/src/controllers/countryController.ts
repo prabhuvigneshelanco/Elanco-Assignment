@@ -3,9 +3,11 @@ import axios from 'axios';
 
 const REST_COUNTRIES_API = 'https://restcountries.com/v3.1/all';
 
+const TEST_SERVER_SELF_SIGN = " http://localhost:4000/countries"
+
 // Get all countries
 export const getCountries = async (req: Request, res: Response) => {
-    const response = await axios.get(REST_COUNTRIES_API);
+    const response = await axios.get(TEST_SERVER_SELF_SIGN);
     const countries = response.data.map((country: any) => ({
       name: country.name.common,
       flag: country.flags.svg,

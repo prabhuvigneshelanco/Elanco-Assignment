@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Header from '../components/Header';
 
 export default function Home() {
   const [countries, setCountries] = useState([]);
@@ -30,6 +31,7 @@ export default function Home() {
 
   return (
     <div className="p-6">
+      <Header />
       {/* Search Input */}
       <div className="mb-4">
         <label className="block text-gray-700">
