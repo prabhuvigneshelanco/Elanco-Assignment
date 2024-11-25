@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
+import SearchBar from '../components/SearchBar';
 
 export default function Home() {
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedRegion, setSelectedRegion] = useState("all");
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -25,25 +27,29 @@ export default function Home() {
   if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
   if (error) return <p className="text-red-500">{error}</p>;
 
-  const filteredCountries = countries.filter((country: any) =>
-    country.name.includes(searchTerm)
-  );
+  /**
+   *  Filter the country data based on the name, region and then filter
+   */
+  const filteredCountries = countries.filter((country: any) => {
+    const matchesSearch = country.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesRegion =
+      selectedRegion === "all" || country.region === selectedRegion;
+    return matchesSearch && matchesRegion;
+  })
 
   return (
     <div className="p-6">
+      {/* Header Component */}
       <Header />
-      {/* Search Input */}
+      {/** Search Bar Component */}
       <div className="mb-4">
-        <label className="block text-gray-700">
-          Search for a Country
-        </label>
-        <input
-          id="search"
-          type="text"
-          placeholder="Enter country name"
-          className="border border-gray-300"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+        <SearchBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          selectedRegion={selectedRegion}
+          setSelectedRegion={setSelectedRegion}
         />
       </div>
 
