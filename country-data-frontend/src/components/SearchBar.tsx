@@ -35,7 +35,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         setSelectedRegion (selectedFilter);
     };
 
-    // Clear the search
+    // Clear the search fields
     const handleClear = () => {
         setSearchTerm('')
         setSearchQuery('')
@@ -44,13 +44,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
     };
     return (
         <div className="w-full max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
-            <div className="flex space-x-4">
+            <div className="flex space-x-1">
                 {/* Search Input */}
                 <input
                     type="text"
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    placeholder="Search..."
+                    placeholder="Capital, Timezone, Name"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
                 

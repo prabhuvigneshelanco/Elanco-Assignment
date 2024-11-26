@@ -12,6 +12,9 @@ export const getCountries = async (req: Request, res: Response) => {
       name: country.name.common,
       flag: country.flags.svg,
       region: country.region,
+      timezones: country.timezones[0],
+      code: country.cca3,
+      capital: country.capital? country.capital[0] : 'NA'
     }));
     res.json(countries);
 };
