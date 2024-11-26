@@ -18,7 +18,7 @@ export const getCountries = async (req: Request, res: Response, next: NextFuncti
         return;
       }
       const { page = 1, limit = 12 } = req.query;
-      const response = await axios.get(TEST_SERVER_SELF_SIGN);
+      const response = await axios.get(REST_COUNTRIES_API);
 
       const countries = response.data.map((country: any) => ({
         name: country.name.common,
