@@ -3,6 +3,7 @@ import axios from 'axios';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import CountryCard from '../components/CountryCard';
+import CountryListSkeleton from '../components/CountryListSkeleton';
 
 export default function Home() {
   const [countries, setCountries] = useState([]);
@@ -21,7 +22,7 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const res = await fetch(`http://localhost:3001/countries?page=${page}&limit=10`);
+      const res = await fetch(`http://localhost:3001/countries?page=${page}&limit=12`);
       const data = await res.json();
 
       // Append new countries to the existing list
@@ -81,7 +82,12 @@ export default function Home() {
     return matchesCapital || matchesSearch || matchesTimezone && matchesRegion;
   })
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  if (loading) return(<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {Array.from({ length: 8 }).map((_, index) => (
+        <CountryListSkeleton key={index} />
+      ))}
+    </div>
+  )
 
   if (error) return <p className="text-red-500">{error}</p>;
 

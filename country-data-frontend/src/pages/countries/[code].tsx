@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import CountryCardSkeleton from '@/src/components/CountryCardSkeleton';
 
 export default function CountryDetailPage() {
   const router = useRouter();
@@ -29,14 +30,14 @@ export default function CountryDetailPage() {
     }
   }, [code]);
 
-  if (loading) return 'Loading....';
+  if (loading) return <CountryCardSkeleton />;
 
   if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
 
   return (
     <div className="container mx-auto p-6">
       <div className="bg-white rounded-lg shadow-md p-6">
-        
+
         <Image
             className="w-full h-48 object-cover rounded-lg mb-6"
             src={country.flag}

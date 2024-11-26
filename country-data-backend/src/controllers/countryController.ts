@@ -17,7 +17,7 @@ export const getCountries = async (req: Request, res: Response, next: NextFuncti
         res.json(cachedData); // Send response, but don't return anything
         return;
       }
-      const { page = 1, limit = 10 } = req.query;
+      const { page = 1, limit = 12 } = req.query;
       const response = await axios.get(TEST_SERVER_SELF_SIGN);
 
       const countries = response.data.map((country: any) => ({
@@ -28,7 +28,7 @@ export const getCountries = async (req: Request, res: Response, next: NextFuncti
         code: country.cca3,
         capital: country.capital? country.capital[0] : 'NA'
       }));
-      
+
       // Parse page and limit parameters
       const pageNum = Number(page);
       const limitNum = Number(limit);
