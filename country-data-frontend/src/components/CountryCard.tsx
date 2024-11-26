@@ -1,6 +1,7 @@
 import React,{useState, useEffect} from 'react';
 import Link from 'next/link';
 import { offsetToTimezoneMap } from '../constants';
+import Image from 'next/image';
 
 interface CountryCardProps {
   country: {
@@ -58,10 +59,12 @@ const CountryCard: React.FC<CountryCardProps> = ({ country }) => {
         <Link href={`/countries/${country.code}`} passHref>
         <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow cursor-pointer">
             {country.flag ? (
-            <img
+            <Image
                 className="w-full h-32 object-cover rounded-t-lg"
                 src={country.flag}
                 alt={`Flag of ${country.name}`}
+                width={200}
+                height={300}
             />
             ) : (
             <p className="text-center">No Flag Available</p>

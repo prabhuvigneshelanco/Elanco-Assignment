@@ -24,13 +24,15 @@ export const getCountryByCode = async (req: Request, res: Response) => {
   const { code } = req.params;
     const response = await axios.get(`https://restcountries.com/v3.1/alpha/${code}`);
     const country = response.data[0];
+    let currency = country.currencies
     res.json({
       name: country.name.common,
       flag: country.flags.svg,
       population: country.population,
       languages: country.languages,
       region: country.region,
-      currency: country.currencies,
+      currency: country.currencies? currency[Object.keys(currency)[0]].name : 'NA',
+      capital: country.capital? country.capital[0] : 'NA'
     });
 };
 
