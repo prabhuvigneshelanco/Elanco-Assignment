@@ -6,24 +6,60 @@ import CountryCard from '../components/CountryCard';
 
 export default function Home() {
   const [countries, setCountries] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRegion, setSelectedRegion] = useState("all");
 
-  useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/countries');
-        setCountries(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to load countries');
-        setLoading(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  // Function to load countries based on the current page
+  const loadCountries = async (page) => {
+    if (loading || !hasMore) return; // Prevent multiple requests while loading
+
+    setLoading(true);
+
+    try {
+      const res = await fetch(`http://localhost:3001/countries?page=${page}&limit=10`);
+      const data = await res.json();
+
+      // Append new countries to the existing list
+      setCountries((prevCountries) => [...prevCountries, ...data]);
+
+      // If the number of countries returned is less than the requested limit, no more data exists
+      if (data.length < 10) {
+        setHasMore(false);
       }
-    };
-    fetchCountries();
+
+      setCurrentPage(page + 1);
+    } catch (error) {
+      console.error('Error loading countries:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Scroll event listener to trigger lazy loading
+  const handleScroll = () => {
+    const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
+
+    if (nearBottom) {
+      loadCountries(currentPage);
+    }
+  };
+
+  useEffect(() => {
+    loadCountries(currentPage);
   }, []);
+
+   // Attach the scroll listener
+   useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [currentPage]);
 
   
 
@@ -72,6 +108,7 @@ export default function Home() {
         ) : (
           <p className="text-gray-500">No countries found.</p>
         )}
+        {!hasMore && <p>No more countries to load.</p>}
       </div>
     </div>
   );
