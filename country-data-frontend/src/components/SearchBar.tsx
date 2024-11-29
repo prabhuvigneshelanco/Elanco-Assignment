@@ -4,7 +4,7 @@ type SearchType = {
 }
 
 export const SearchBar: React.FC<SearchType> = ({ value, onChange }) => (
-   <div className="mb-4 mx-4">
+   <div className="mb-10 mx-4">
       <input
          id="search"
          type="text"

@@ -30,27 +30,31 @@ export default function Home() {
    }
 
    if (error) {
-      return <p className="text-red-500">{error}</p>;
+      return <p className="text-red-500 text-center">{error}</p>;
    }
 
    const filteredCountries: Country[] = countries.filter((country: Country) => country.name.includes(searchTerm));
 
    return (
-      <div className="p-6">
-         {/* App Header */}
-         <Header />
+    <div className="min-h-screen bg-gray-100">
+      {/* Header */}
+      <Header />
 
-         {/* Search countries */}
-         <SearchBar value={searchTerm} onChange={setSearchTerm} />
+      <div className="p-4 sm:p-6">
+        {/* Search Input */}
+        <SearchBar value={searchTerm} onChange={setSearchTerm} />
 
-         {/* Display filtered countries */}
-         <div className="grid grid-cols-4">
-            {filteredCountries.length > 0 ? (
-               filteredCountries.map((country) => <CountryCard key={country.name} country={country} />)
-            ) : (
-               <p className="text-gray-500">No countries found.</p>
-            )}
-         </div>
+        {/* Display filtered countries */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filteredCountries.length > 0 ? (
+            filteredCountries.map((country) => (
+              <CountryCard key={country.name} country={country} />
+            ))
+          ) : (
+            <p className="text-gray-500 text-center">No countries found.</p>
+          )}
+        </div>
       </div>
-   );
+    </div>
+  );
 }
