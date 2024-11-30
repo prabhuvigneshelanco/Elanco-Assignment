@@ -1,28 +1,20 @@
 import { Request, Response } from "express";
 import axios from "axios";
-import { fetchAllCountries } from "../services/countryService";
+import { fetchAllCountries, fetchCountryByCode } from "../services/countryService";
 
 const REST_COUNTRIES_API = "https://restcountries.com/v3.1/all";
 
 // Get all countries
 export const getCountries = async (req: Request, res: Response) => {
-   const { status, data} = await fetchAllCountries();
+   const { status, data } = await fetchAllCountries();
    res.status(status).json(data);
 };
 
 // Get country by code
 export const getCountryByCode = async (req: Request, res: Response) => {
    const { code } = req.params;
-   const response = await axios.get(`https://restcountries.com/v3.1/alpha/${code}`);
-   const country = response.data[0];
-   res.json({
-      name: country.name.common,
-      flag: country.flags.svg,
-      population: country.population,
-      languages: country.languages,
-      region: country.region,
-      currency: country.currencies,
-   });
+   const { status, data } = await fetchCountryByCode(code);
+   res.status(status).json(data);
 };
 
 // Filter countries by region
