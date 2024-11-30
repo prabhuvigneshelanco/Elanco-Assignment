@@ -3,7 +3,7 @@ import { ALL_COUNTRIES, BASE_REST_COUNTRIES_API } from "../core/constants";
 import { Country } from "../core/types/country";
 import { APIResponse } from "../core/types/apiResponse";
 
-export const fetchAllCountries = async () => {
+export const fetchAllCountriesService = async () => {
    let result: APIResponse = {
       status: 0,
       data: "",
@@ -11,7 +11,7 @@ export const fetchAllCountries = async () => {
 
    try {
       const { data } = await axios.get(BASE_REST_COUNTRIES_API + ALL_COUNTRIES);
-      const countries: Country = data.map((country: any) => ({
+      const countries: Country[] = data.map((country: any) => ({
          name: country.name.common,
          flag: country.flags.svg,
          region: country.region,
@@ -27,7 +27,7 @@ export const fetchAllCountries = async () => {
    }
 };
 
-export const fetchCountryByCode = async (code: string) => {
+export const fetchCountryByCodeService = async (code: string) => {
    let result: APIResponse = {
       status: 0,
       data: "",
@@ -65,4 +65,22 @@ export const fetchCountryByCode = async (code: string) => {
    } finally {
       return result;
    }
+};
+
+export const filterCountriesByRegionService = async (region: string) => {
+  let result: APIResponse = {
+     status: 0,
+     data: "",
+  };
+
+  const response = await fetchAllCountriesService();
+
+  if (Array.isArray(response.data) && response.data.every((item) => typeof item === "object")) {
+     const filteredCountries = response.data.filter((country: any) => country.region === region);
+     result.status = 200;
+     result.data = filteredCountries;
+     return result;
+  } else {
+     return response;
+  }
 };
