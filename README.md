@@ -12,8 +12,7 @@ This project is a full-stack web application that displays country information u
 - Node.js (v14.x or higher)
 - npm or yarn or pnpm
 
-I have chnaged the code from typescript to javascript.
-
+I have changed the code from typescript to javascript.
 •	Country List Page: Displays a list of all countries with basic information: name, flag, and region. (Done )
 •	Uses a Card component to display country details including the current time in the 12-hour format based on the country’s timezone. (done)
 •	Lazy-Loading and Infinite Scroll: Implements lazy loading to load countries in batches, improving performance by loading only when needed. (Instead implemented pagination with numbers)
