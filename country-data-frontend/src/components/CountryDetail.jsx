@@ -37,7 +37,7 @@ export default function CountryDetail() {
             <strong>Language(s):</strong> {
             countryDetails.language
                 ? Object.values(countryDetails.language).join(', ') || 'Unknown'
-                : 'N/A'
+                : 'Unknown'
             }
           </Typography>
           <Typography variant="body1" color="textPrimary" gutterBottom>
@@ -45,7 +45,7 @@ export default function CountryDetail() {
             countryDetails.currencies
                 ? Object.entries(countryDetails.currencies).map(([currencyCode, currency]) => {
                     return `${currency.name} (${currency.symbol || 'Unknown'})`;
-                }).join(', ') || 'N/A'
+                }).join(', ') || 'Unknown'
                 : 'N/A'
             }
           </Typography>
