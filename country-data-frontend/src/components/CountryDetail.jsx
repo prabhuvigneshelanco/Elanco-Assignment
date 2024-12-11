@@ -46,7 +46,7 @@ export default function CountryDetail() {
                 ? Object.entries(countryDetails.currencies).map(([currencyCode, currency]) => {
                     return `${currency.name} (${currency.symbol || 'Unknown'})`;
                 }).join(', ') || 'Unknown'
-                : 'N/A'
+                : 'Unknown'
             }
           </Typography>
           <Typography variant="body1" color="textPrimary" gutterBottom>
